@@ -9,6 +9,7 @@ app.init = function() {
   $('#chats').on('click', '.username', function() {
     app.addFriend($(this).text());
   });
+  $('#send').on('submit', app.handleSubmit);
 };
 
 app.send = function(message) {
@@ -61,6 +62,15 @@ app.addRoom = function(roomName) {
 
 app.addFriend = function(friend) {
   app.friends.push(friend);
+};
+
+app.handleSubmit = function() {
+  //
+  var text = $('#message').val();
+  var username = window.location.search.slice(10);
+  var room = $('#roomSelect').val();
+
+
 };
 
 $(document).ready(function() {
