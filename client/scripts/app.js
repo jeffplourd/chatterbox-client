@@ -73,13 +73,21 @@ app.addFriend = function(friend) {
   app.friends[friend] = friend;
 };
 
-app.handleSubmit = function() {
+app.handleSubmit = function(event) {
   //
   var text = $('#message').val();
   var username = window.location.search.slice(10);
   var room = $('#roomSelect').val();
 
+  app.send({
+    text: text,
+    username: username,
+    roomname: room
+  });
 
+  event.preventDefault();
+
+  $('#message').val('');
 };
 
 $(document).ready(function() {
