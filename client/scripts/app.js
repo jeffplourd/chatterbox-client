@@ -1,6 +1,7 @@
 // YOUR CODE HERE:
 
 var app = {
+  server: 'https://api.parse.com/1/classes/chatterbox'
 };
 
 app.init = function() {
@@ -8,7 +9,7 @@ app.init = function() {
 
 app.send = function(message) {
   $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -21,3 +22,29 @@ app.send = function(message) {
     }
   });
 };
+
+app.fetch = function() {
+  $.ajax({
+    url: app.server,
+    type: 'GET',
+    success: function (data) {
+      console.log('chatterbox: Messages fetched');
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to fetch messages');
+    }
+  });
+};
+
+app.clearMessages = function() {
+  $('#chats').empty();
+};
+
+app.addMessage = function(message) {
+  var $chat = $('<div class="chat"></div>').text(message.text);
+  var $username = $('<span class="username"></span>').text(message.username);
+  $chat.prepend($username);
+  $('#chats').append($chat);
+}
+
