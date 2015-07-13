@@ -1,10 +1,14 @@
 // YOUR CODE HERE:
 
 var app = {
-  server: 'https://api.parse.com/1/classes/chatterbox'
+  server: 'https://api.parse.com/1/classes/chatterbox',
+  friends: []
 };
 
 app.init = function() {
+  $('#chats').on('click', '.username', function() {
+    app.addFriend($(this).text());
+  });
 };
 
 app.send = function(message) {
@@ -48,3 +52,17 @@ app.addMessage = function(message) {
   $('#chats').append($chat);
 }
 
+app.addRoom = function(roomName) {
+  var $roomOption = $('<option></option>');
+  $roomOption.text(roomName);
+  $roomOption.val(roomName);
+  $('#roomSelect').append($roomOption);
+};
+
+app.addFriend = function(friend) {
+  app.friends.push(friend);
+};
+
+$(document).ready(function() {
+  app.init();
+});
