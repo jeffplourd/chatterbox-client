@@ -2,7 +2,7 @@
 
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
-  friends: []
+  friends: {}
 };
 
 app.init = function() {
@@ -10,6 +10,8 @@ app.init = function() {
     app.addFriend($(this).text());
   });
   $('#send').on('submit', app.handleSubmit);
+
+  setInterval(app.fetch, 200);
 };
 
 app.send = function(message) {
@@ -34,6 +36,10 @@ app.fetch = function() {
     type: 'GET',
     success: function (data) {
       console.log('chatterbox: Messages fetched');
+      app.clearMessages();
+      for (var i = 0; i < data.results.length; i++) {
+        app.addMessage(data.results[i]);
+      }
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -51,7 +57,10 @@ app.addMessage = function(message) {
   var $username = $('<span class="username"></span>').text(message.username);
   $chat.prepend($username);
   $('#chats').append($chat);
-}
+  if(app.friends.hasOwnProperty(message.username)) {
+    $chat.addClass('friend');
+  }
+};
 
 app.addRoom = function(roomName) {
   var $roomOption = $('<option></option>');
@@ -61,7 +70,7 @@ app.addRoom = function(roomName) {
 };
 
 app.addFriend = function(friend) {
-  app.friends.push(friend);
+  app.friends[friend] = friend;
 };
 
 app.handleSubmit = function() {

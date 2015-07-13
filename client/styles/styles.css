@@ -59,6 +59,11 @@ form input[type=text] {
     padding: 5px;
 }
 
+#chats {
+    max-height: 40em;
+    overflow: scroll;
+}
+
 .chat {
     padding: 5px;
     margin-bottom: 5px;
@@ -71,6 +76,11 @@ form input[type=text] {
 
 .chat:hover {
     background-color: #ddd;
+}
+
+.friend {
+    background-color: #000033;
+    color: white;
 }
 
 .spinner {
