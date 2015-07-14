@@ -2,7 +2,9 @@
 
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
-  friends: {}
+  friends: {},
+  currentRoom: null,
+  rooms: {}
 };
 
 app.init = function() {
@@ -10,6 +12,10 @@ app.init = function() {
     app.addFriend($(this).text());
   });
   $('#send').on('submit', app.handleSubmit);
+
+  $('#roomSelect').on('change', function() {
+    app.currentRoom = $('#roomSelect').val();
+  });
 
   setInterval(app.fetch, 200);
 };
@@ -39,6 +45,7 @@ app.fetch = function() {
       app.clearMessages();
       for (var i = 0; i < data.results.length; i++) {
         app.addMessage(data.results[i]);
+        app.addRoom(data.results[i].roomName);
       }
     },
     error: function (data) {
@@ -53,20 +60,26 @@ app.clearMessages = function() {
 };
 
 app.addMessage = function(message) {
-  var $chat = $('<div class="chat"></div>').text(message.text);
-  var $username = $('<span class="username"></span>').text(message.username);
-  $chat.prepend($username);
-  $('#chats').append($chat);
-  if(app.friends.hasOwnProperty(message.username)) {
-    $chat.addClass('friend');
+  if (message.roomname === app.currentRoom || app.currentRoom === null) {
+    var $chat = $('<div class="chat"></div>').text(message.text);
+    var $username = $('<span class="username"></span>').text(message.username);
+    $chat.prepend($username);
+    $('#chats').append($chat);
+    if(app.friends.hasOwnProperty(message.username)) {
+      $chat.addClass('friend');
+    }
   }
 };
 
 app.addRoom = function(roomName) {
-  var $roomOption = $('<option></option>');
-  $roomOption.text(roomName);
-  $roomOption.val(roomName);
-  $('#roomSelect').append($roomOption);
+  if (roomName !== undefined && !app.rooms.hasOwnProperty(roomName)) {
+    var $roomOption = $('<option></option>');
+    $roomOption.text(roomName);
+    $roomOption.val(roomName);
+    $('#roomSelect').append($roomOption);
+  } else {
+    app.rooms[roomName] = roomName;
+  }
 };
 
 app.addFriend = function(friend) {
@@ -74,7 +87,6 @@ app.addFriend = function(friend) {
 };
 
 app.handleSubmit = function(event) {
-  //
   var text = $('#message').val();
   var username = window.location.search.slice(10);
   var room = $('#roomSelect').val();
