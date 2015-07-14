@@ -18,6 +18,12 @@ app.init = function() {
   });
 
   setInterval(app.fetch, 200);
+
+  $('#newRoom').on('click', function() {
+    var roomname = prompt('What\'s the name of the room?');
+    app.addRoom(roomname);
+    app.currentRoom = roomname;
+  });
 };
 
 app.send = function(message) {
@@ -43,9 +49,9 @@ app.fetch = function() {
     success: function (data) {
       console.log('chatterbox: Messages fetched');
       app.clearMessages();
-      for (var i = 0; i < data.results.length; i++) {
+      for (var i = data.results.length-1; i >= 0; i--) {
         app.addMessage(data.results[i]);
-        app.addRoom(data.results[i].roomName);
+        app.addRoom(data.results[i].roomname);
       }
     },
     error: function (data) {
@@ -77,7 +83,6 @@ app.addRoom = function(roomName) {
     $roomOption.text(roomName);
     $roomOption.val(roomName);
     $('#roomSelect').append($roomOption);
-  } else {
     app.rooms[roomName] = roomName;
   }
 };
